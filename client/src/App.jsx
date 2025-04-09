@@ -17,15 +17,20 @@ const App = () => {
   const fetchJobs = async () => {
     try {
       const res = await axios.get(BASE_URL);
-      console.log("Fetched jobs:", res.data); // 👀 Check the data format
-      // ✅ Updated to handle either an array or an object
-      const jobData = Array.isArray(res.data) ? res.data : res.data.jobs;
-      setJobs(jobData);
+      const data = res.data;
+  
+      if (Array.isArray(data)) {
+        setJobs(data);
+      } else {
+        console.warn("Backend returned non-array:", data);
+        setJobs([]);
+      }
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      setJobs([]);
+      setJobs([]);  // fallback to prevent crash
     }
   };
+  
 
   useEffect(() => {
     fetchJobs();
@@ -125,7 +130,8 @@ const App = () => {
 
         {/* Job List */}
         <div className="grid sm:grid-cols-2 gap-6">
-          {jobs.map((job) => (
+        {Array.isArray(jobs) && jobs.map((job) => (
+
             <div key={job._id} className="bg-white shadow rounded-lg p-5 space-y-2 border">
               <h2 className="text-xl font-bold text-gray-800">{job.company}</h2>
               <p className="text-gray-600">{job.role}</p>
