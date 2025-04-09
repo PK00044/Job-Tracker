@@ -12,6 +12,11 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+  console.log(`[${req.method}] ${req.path} - Query:`, req.query);
+  next();
+});
+
 app.use("/api/jobs", jobRoutes);
 
 app.get("/", (req, res) => {

@@ -1,6 +1,5 @@
 import Job from '../models/Job.js';
 
-// Add job
 export const addJob = async (req, res) => {
   try {
     const newJob = new Job(req.body);
