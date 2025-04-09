@@ -4,7 +4,6 @@ import axios from 'axios';
 // const BASE_URL = 'http://localhost:5000/api/jobs';
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-
 const App = () => {
   const [jobs, setJobs] = useState([]);
   const [form, setForm] = useState({
@@ -18,13 +17,16 @@ const App = () => {
   const fetchJobs = async () => {
     try {
       const res = await axios.get(BASE_URL);
-      console.log("Fetched jobs:", res.data);  // 👈 log here
-      setJobs(res.data);
+      console.log("Fetched jobs:", res.data); // 👀 Check the data format
+      // ✅ Updated to handle either an array or an object
+      const jobData = Array.isArray(res.data) ? res.data : res.data.jobs;
+      setJobs(jobData);
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      setJobs([]);  // fallback to empty array to prevent `.map` crash
+      setJobs([]);
     }
   };
+
   useEffect(() => {
     fetchJobs();
   }, []);
@@ -50,10 +52,8 @@ const App = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-50 to-slate-100 py-10 px-4 sm:px-8">
       <div className="max-w-4xl mx-auto">
-        {/* Header */}
         <h1 className="text-4xl font-bold text-blue-600 mb-8 text-center">🎯 Student Job Tracker</h1>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit}
           className="bg-white shadow-lg rounded-lg p-6 space-y-6 mb-10"
