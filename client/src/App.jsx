@@ -16,18 +16,17 @@ const App = () => {
 
   const fetchJobs = async () => {
     try {
-      const res = await axios.get(BASE_URL);
-      const data = res.data;
+      const res = await fetch("https://job-tracker-o3gi.onrender.com/api/jobs");
+      const data = await res.json();
   
-      if (Array.isArray(data)) {
-        setJobs(data);
-      } else {
-        console.warn("Backend returned non-array:", data);
-        setJobs([]);
+      if (!Array.isArray(data)) {
+        console.error("Backend returned non-array:", data);
+        return;
       }
+  
+      setJobs(data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
-      setJobs([]);  // fallback to prevent crash
     }
   };
   
