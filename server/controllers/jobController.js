@@ -12,12 +12,13 @@ export const addJob = async (req, res) => {
 };
 
 // Get all jobs
+// Get all jobs
 export const getJobs = async (req, res) => {
   try {
     const jobs = await Job.find();
-    res.status(200).json(jobs); 
-    
-    res.status(500).json({ message: error.message });
+    res.status(200).json(jobs);  // ✅ Correct response
+  } catch (error) {
+    res.status(500).json({ message: error.message });  // ✅ This runs only on error
   }
 };
 
