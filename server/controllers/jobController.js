@@ -11,16 +11,35 @@ export const addJob = async (req, res) => {
   }
 };
 
-// Get all jobs
-// Get all jobs
 export const getJobs = async (req, res) => {
   try {
-    const jobs = await Job.find();
-    res.status(200).json(jobs);  // ✅ Correct response
-  } catch (error) {
-    res.status(500).json({ message: error.message });  // ✅ This runs only on error
+    const { status, date } = req.query;
+    const filter = {};
+
+    if (status) {
+      filter.status = status;
+    }
+
+    if (date) {
+      // Match only the date part (ignoring time)
+      const selectedDate = new Date(date);
+      const nextDay = new Date(selectedDate);
+      nextDay.setDate(selectedDate.getDate() + 1);
+
+      filter.appliedDate = {
+        $gte: selectedDate,
+        $lt: nextDay,
+      };
+    }
+
+    const jobs = await Job.find(filter).sort({ appliedDate: -1 });
+    res.json(jobs);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 
 // Update job status
